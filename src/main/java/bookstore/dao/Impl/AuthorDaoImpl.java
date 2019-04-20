@@ -1,0 +1,87 @@
+package bookstore.dao.Impl;
+
+import bookstore.dao.AuthorDao;
+import bookstore.entity.Author;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Repository
+@Transactional
+public class AuthorDaoImpl implements AuthorDao {
+
+    private final NamedParameterJdbcTemplate jdbc;
+
+    @Autowired
+    public AuthorDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.jdbc = namedParameterJdbcTemplate;
+    }
+
+    private final String INSERT_QUERY = "insert into authors (author_name)" +
+            " values ( :author_name)";
+
+    private final String FIND_BY_NAME_QUERY = "select id, author_name from authors " +
+            " where author_name = :author_name";
+
+    private final String FIND_BY_ID_QUERY = "select id, author_name from authors " +
+            " where id = :id";
+
+    private final String DELETE_BY_NAME_QUERY = "delete from authors" +
+            " where author_name = :author_name";
+
+    private final String LIST_ALL_QUERY = "select * from authors";
+
+    @Override
+    public Author creteAuthor(Author author) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbc.update(INSERT_QUERY,
+                new MapSqlParameterSource("author_name", author.getAuthorName()),
+                keyHolder
+        );
+
+        return new Author((Integer) keyHolder.getKey(), author);
+    }
+
+    @Override
+    public Author findByName(String authorName) {
+        return jdbc.queryForObject(FIND_BY_NAME_QUERY,
+                new MapSqlParameterSource("author_name", authorName),
+                (rs, rowNum) -> new Author(
+                        rs.getInt("id"),
+                        rs.getString("author_name"))
+        );
+    }
+
+    @Override
+    public Author findById(Integer id) {
+        return jdbc.queryForObject(FIND_BY_ID_QUERY,
+                new MapSqlParameterSource("id", id),
+                (rs, rowNum) -> new Author(
+                        rs.getInt("id"),
+                        rs.getString("author_name"))
+        );
+    }
+
+    @Override
+    public void deleteByName(String authorName) {
+        jdbc.update(DELETE_BY_NAME_QUERY,
+                new MapSqlParameterSource("author_name", authorName)
+        );
+    }
+
+    @Override
+    public List<Author> listAll() {
+        return jdbc.query(LIST_ALL_QUERY,
+                (rs, rowNum) -> new Author(
+                        rs.getInt("id"),
+                        rs.getString("author_name"))
+        );
+    }
+}
