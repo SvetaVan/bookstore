@@ -3,6 +3,7 @@ package bookstore.dao.Impl;
 import bookstore.dao.BookDao;
 import bookstore.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,6 +11,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -55,23 +58,15 @@ public class BookDaoImpl implements BookDao {
     public Book findByName(String bookName) {
         return jdbc.queryForObject(FIND_BY_NAME_QUERY,
                 new MapSqlParameterSource("book_name", bookName),
-                (rs, rowNum) -> new Book(
-                        rs.getInt("id"),
-                        rs.getInt("author_id"),
-                        rs.getInt("genre_id"),
-                        rs.getString("book_name"))
-                );
+                new BookMapper()
+        );
     }
 
     @Override
     public Book findById(int id) {
         return jdbc.queryForObject(FIND_BY_ID_QUERY,
                 new MapSqlParameterSource("id", id),
-                (rs, rowNum) -> new Book(
-                        rs.getInt("id"),
-                        rs.getInt("author_Id"),
-                        rs.getInt("genre_Id"),
-                        rs.getString("book_name"))
+                new BookMapper()
         );
 
     }
@@ -86,11 +81,19 @@ public class BookDaoImpl implements BookDao {
     @Override
     public List<Book> listBooks() {
         return jdbc.query(LIST_ALL_BOOKS,
-                (rs, rowNum) -> new Book(
-                        rs.getInt("id"),
-                        rs.getInt("author_Id"),
-                        rs.getInt("genre_Id"),
-                        rs.getString("book_name"))
-                );
+                new BookMapper()
+        );
+    }
+
+    private static class BookMapper implements RowMapper<Book> {
+
+        @Override
+        public Book mapRow(ResultSet rs, int i) throws SQLException {
+            int id = rs.getInt("id");
+            int author_id = rs.getInt("author_Id");
+            int genre_id = rs.getInt("genre_Id");
+            String book_name = rs.getString("book_name");
+            return new Book(id, author_id, genre_id, book_name);
+        }
     }
 }

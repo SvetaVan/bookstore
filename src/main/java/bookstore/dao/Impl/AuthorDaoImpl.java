@@ -3,6 +3,7 @@ package bookstore.dao.Impl;
 import bookstore.dao.AuthorDao;
 import bookstore.entity.Author;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,6 +11,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -53,9 +56,7 @@ public class AuthorDaoImpl implements AuthorDao {
     public Author findByName(String authorName) {
         return jdbc.queryForObject(FIND_BY_NAME_QUERY,
                 new MapSqlParameterSource("author_name", authorName),
-                (rs, rowNum) -> new Author(
-                        rs.getInt("id"),
-                        rs.getString("author_name"))
+                new AuthorMapper()
         );
     }
 
@@ -63,9 +64,7 @@ public class AuthorDaoImpl implements AuthorDao {
     public Author findById(Integer id) {
         return jdbc.queryForObject(FIND_BY_ID_QUERY,
                 new MapSqlParameterSource("id", id),
-                (rs, rowNum) -> new Author(
-                        rs.getInt("id"),
-                        rs.getString("author_name"))
+                new AuthorMapper()
         );
     }
 
@@ -79,9 +78,17 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public List<Author> listAll() {
         return jdbc.query(LIST_ALL_QUERY,
-                (rs, rowNum) -> new Author(
-                        rs.getInt("id"),
-                        rs.getString("author_name"))
+                new AuthorMapper()
         );
+    }
+
+    private static class AuthorMapper implements RowMapper<Author> {
+
+        @Override
+        public Author mapRow(ResultSet resultSet, int i) throws SQLException {
+            int id = resultSet.getInt("id");
+            String name = resultSet.getString("author_name");
+            return new Author(id, name);
+        }
     }
 }

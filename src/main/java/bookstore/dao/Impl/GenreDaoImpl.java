@@ -1,8 +1,10 @@
 package bookstore.dao.Impl;
 
 import bookstore.dao.GenreDao;
+import bookstore.entity.Author;
 import bookstore.entity.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,6 +12,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -83,5 +87,15 @@ public class GenreDaoImpl implements GenreDao {
                         rs.getInt("id"),
                         rs.getString("genre_name"))
         );
+    }
+
+    private static class GenreMapper implements RowMapper<Genre> {
+
+        @Override
+        public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
+            int id = resultSet.getInt("id");
+            String name = resultSet.getString("genre_name");
+            return new Genre(id, name);
+        }
     }
 }
