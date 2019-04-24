@@ -3,6 +3,7 @@ package bookstore.dao.Impl;
 import bookstore.dao.BookDao;
 import bookstore.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -56,19 +57,26 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book findByName(String bookName) {
-        return jdbc.queryForObject(FIND_BY_NAME_QUERY,
-                new MapSqlParameterSource("book_name", bookName),
-                new BookMapper()
-        );
+        try {
+            return jdbc.queryForObject(FIND_BY_NAME_QUERY,
+                    new MapSqlParameterSource("book_name", bookName),
+                    new BookMapper()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
     public Book findById(int id) {
-        return jdbc.queryForObject(FIND_BY_ID_QUERY,
-                new MapSqlParameterSource("id", id),
-                new BookMapper()
-        );
-
+        try {
+            return jdbc.queryForObject(FIND_BY_ID_QUERY,
+                    new MapSqlParameterSource("id", id),
+                    new BookMapper()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

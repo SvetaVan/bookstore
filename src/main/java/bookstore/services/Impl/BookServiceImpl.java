@@ -1,8 +1,9 @@
-package bookstore.services;
+package bookstore.services.Impl;
 
 import bookstore.dao.BookDao;
 import bookstore.dao.Impl.BookDaoImpl;
 import bookstore.entity.Book;
+import bookstore.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

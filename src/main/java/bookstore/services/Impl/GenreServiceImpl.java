@@ -1,7 +1,8 @@
-package bookstore.services;
+package bookstore.services.Impl;
 
 import bookstore.dao.GenreDao;
 import bookstore.entity.Genre;
+import bookstore.services.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

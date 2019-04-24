@@ -3,6 +3,7 @@ package bookstore.dao.Impl;
 import bookstore.dao.AuthorDao;
 import bookstore.entity.Author;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -54,18 +55,26 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author findByName(String authorName) {
-        return jdbc.queryForObject(FIND_BY_NAME_QUERY,
-                new MapSqlParameterSource("author_name", authorName),
-                new AuthorMapper()
-        );
+        try {
+            return jdbc.queryForObject(FIND_BY_NAME_QUERY,
+                    new MapSqlParameterSource("author_name", authorName),
+                    new AuthorMapper()
+            );
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     @Override
     public Author findById(Integer id) {
-        return jdbc.queryForObject(FIND_BY_ID_QUERY,
-                new MapSqlParameterSource("id", id),
-                new AuthorMapper()
-        );
+        try {
+            return jdbc.queryForObject(FIND_BY_ID_QUERY,
+                    new MapSqlParameterSource("id", id),
+                    new AuthorMapper()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

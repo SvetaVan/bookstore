@@ -4,6 +4,7 @@ import bookstore.dao.GenreDao;
 import bookstore.entity.Author;
 import bookstore.entity.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -55,22 +56,30 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public Genre findByName(String genreName) {
-        return jdbc.queryForObject(FIND_BY_NAME_QUERY,
-                new MapSqlParameterSource("genre_name", genreName),
-                (rs, rowNum) -> new Genre(
-                        rs.getInt("id"),
-                        rs.getString("genre_name"))
-        );
+        try {
+            return jdbc.queryForObject(FIND_BY_NAME_QUERY,
+                    new MapSqlParameterSource("genre_name", genreName),
+                    (rs, rowNum) -> new Genre(
+                            rs.getInt("id"),
+                            rs.getString("genre_name"))
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
     public Genre findById(Integer id) {
-        return jdbc.queryForObject(FIND_BY_ID_QUERY,
-                new MapSqlParameterSource("id", id),
-                (rs, rowNum) -> new Genre(
-                        rs.getInt("id"),
-                        rs.getString("genre_name"))
-        );
+        try {
+            return jdbc.queryForObject(FIND_BY_ID_QUERY,
+                    new MapSqlParameterSource("id", id),
+                    (rs, rowNum) -> new Genre(
+                            rs.getInt("id"),
+                            rs.getString("genre_name"))
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
