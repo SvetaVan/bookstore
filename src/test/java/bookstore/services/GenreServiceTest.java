@@ -41,9 +41,9 @@ public class GenreServiceTest {
     }
 
     @Test
-    public void GenreListAllTest() {
-        List<Genre> Genres = genreService.listAll();
-        Assert.assertEquals(9, Genres.size());
+    public void genreListAllTest() {
+        List<Genre> genres = genreService.listAll();
+        Assert.assertEquals(9, genres.size());
     }
 
 }

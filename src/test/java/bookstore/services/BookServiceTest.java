@@ -1,5 +1,6 @@
 package bookstore.services;
 
+import bookstore.entity.Book;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,34 +20,28 @@ public class BookServiceTest {
     @Autowired
     private BookService bookService;
 
-    /*@Test
-    public void genreCreationIdTest() {
-        Genre genreCreated = genreService.createGenre(new Genre("драма"));
-        Assert.assertEquals("драма", genreCreated.getGenreName());
+    @Test
+    public void BookCreationIdTest() {
+        bookService.createBook(new Book(1,1,"Some book"));
+        Assert.assertEquals("Some book", bookService.findByName("Some book").getBookName());
     }
 
     @Test
-    public void genreFindByNameTest() {
-        genreService.createGenre(new Genre("боевик"));
-        Genre foundGenre = genreService.findByName("боевик");
-        Assert.assertEquals("боевик", foundGenre.getGenreName());
+    public void bookFindByNameTest() {
+        bookService.createBook(new Book(2,2, "Some book 2"));
+        Assert.assertEquals("Some book 2", bookService.findByName("Some book 2").getBookName());
     }
 
     @Test
-    public void genreDeleteByNameTest() {
-        genreService.createGenre(new Genre("романтическая комедия"));
-        genreService.deleteByName("романтическая комедия");
-        Assert.assertNull(genreService.findByName("романтическая комедия"));
+    public void bookDeleteByNameTest() {
+        bookService.createBook(new Book(3,3,"Some book 3"));
+        bookService.deleteByName("Some book 3");
+        Assert.assertNull(bookService.findByName("Some book 3"));
     }
 
     @Test
-    public void GenreListAllTest() {
-        List<Genre> Genres = genreService.listAll();
-        Assert.assertEquals(9, Genres.size());
+    public void bookListAllTest() {
+        List<Book> books = bookService.listBooks();
+        Assert.assertEquals(7, books.size());
     }
-
-
-
-*/
-
 }
