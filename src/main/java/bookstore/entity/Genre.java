@@ -1,14 +1,32 @@
 package bookstore.entity;
 
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.Collection;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "genres",
+        uniqueConstraints = {@UniqueConstraint(
+                columnNames = {"genre_id", "genre_name"})}
+)
 public class Genre {
 
-    final private Integer id;
-    final private String genreName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "genre_id", nullable = false, updatable = false)
+    private Integer id;
 
-    public Genre(String genre){
-        this.id = null;
+    @Column(name = "genre_name", nullable = false, updatable = false)
+    private String genreName;
+
+    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
+    private Collection<Book> books;
+
+    public Genre(String genre) {
         this.genreName = genre;
     }
 
@@ -22,22 +40,7 @@ public class Genre {
         this.genreName = genre.getGenreName();
     }
 
-    public String getGenreName() {
-        return genreName;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Genre genre1 = (Genre) o;
-        return Objects.equals(genreName, genre1.genreName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(genreName);
-    }
+    public Genre(){}
 
     @Override
     public String toString() {

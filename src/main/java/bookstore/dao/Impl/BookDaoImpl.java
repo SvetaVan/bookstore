@@ -1,107 +1,73 @@
 package bookstore.dao.Impl;
 
 import bookstore.dao.BookDao;
+import bookstore.entity.Author;
 import bookstore.entity.Book;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import bookstore.exception.BookStoreException;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-@Transactional
 public class BookDaoImpl implements BookDao {
 
-    private final NamedParameterJdbcTemplate jdbc;
-
-    @Autowired
-    public BookDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.jdbc = namedParameterJdbcTemplate;
-    }
-
-    private final String INSERT_QUERY = "insert into books (author_id, genre_id, book_name)" +
-            " values (:author_id, :genre_id, :book_name)";
-
-    private final String FIND_BY_NAME_QUERY = "select id, author_id, genre_id, book_name from books " +
-            " where book_name = :book_name";
-
-    private final String FIND_BY_ID_QUERY = "select id, author_id, genre_id, book_name from books " +
-            " where id = :id";
-
-    private final String DELETE_BY_NAME_QUERY = "delete from books" +
-            " where book_name = :book_name";
-
-    private final String LIST_ALL_BOOKS = "select * from books";
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Book createBook(Book book) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbc.update(INSERT_QUERY,
-                new MapSqlParameterSource("author_id", book.getAuthorId())
-                        .addValue("genre_id", book.getGenreId())
-                        .addValue("book_name", book.getBookName()),
-                keyHolder
-        );
-
-        return new Book((Integer) keyHolder.getKey(), book);
+        entityManager.persist(book);
+        return new Book(book.getId(), book);
     }
 
     @Override
-    public Book findByName(String bookName) {
-        try {
-            return jdbc.queryForObject(FIND_BY_NAME_QUERY,
-                    new MapSqlParameterSource("book_name", bookName),
-                    new BookMapper()
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
+    public Book loadByName(String bookName) {
+        TypedQuery<Book> query = entityManager.createQuery(
+                "select b from Book b where b.bookName = :bookName"
+                , Book.class);
+        query.setParameter("bookName", bookName);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public Optional<Book> findByName(String bookName) {
+        TypedQuery<Book> query = entityManager.createQuery(
+                "select b from Book b where b.bookName = :bookName"
+                , Book.class);
+        query.setParameter("bookName", bookName);
+        List<Book> resultList = query.getResultList();
+        if (resultList.size() == 0) {
+            return Optional.empty();
+        } else if (resultList.size() > 1) {
+            throw new BookStoreException("Result set is more than 1.");
+        } else {
+            Book book = resultList.get(0);
+            return Optional.of(book);
         }
     }
 
     @Override
     public Book findById(int id) {
-        try {
-            return jdbc.queryForObject(FIND_BY_ID_QUERY,
-                    new MapSqlParameterSource("id", id),
-                    new BookMapper()
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+        return entityManager.find(Book.class, id);
     }
 
     @Override
     public void deleteByName(String bookName) {
-        jdbc.update(DELETE_BY_NAME_QUERY,
-                new MapSqlParameterSource("book_name", bookName)
-        );
+        Query query = entityManager.createQuery("delete from Book b where b.bookName = :book_name");
+        query.setParameter("book_name", bookName);
+        query.executeUpdate();
     }
 
     @Override
     public List<Book> listBooks() {
-        return jdbc.query(LIST_ALL_BOOKS,
-                new BookMapper()
-        );
-    }
-
-    private static class BookMapper implements RowMapper<Book> {
-
-        @Override
-        public Book mapRow(ResultSet rs, int i) throws SQLException {
-            int id = rs.getInt("id");
-            int author_id = rs.getInt("author_Id");
-            int genre_id = rs.getInt("genre_Id");
-            String book_name = rs.getString("book_name");
-            return new Book(id, author_id, genre_id, book_name);
-        }
+        TypedQuery<Book> query = entityManager.createQuery(
+                "select b from Book b"
+                , Book.class);
+        return query.getResultList();
     }
 }

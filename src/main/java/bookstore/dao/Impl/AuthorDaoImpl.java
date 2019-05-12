@@ -2,102 +2,68 @@ package bookstore.dao.Impl;
 
 import bookstore.dao.AuthorDao;
 import bookstore.entity.Author;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import bookstore.exception.BookStoreException;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-@Transactional
 public class AuthorDaoImpl implements AuthorDao {
 
-    private final NamedParameterJdbcTemplate jdbc;
-
-    @Autowired
-    public AuthorDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.jdbc = namedParameterJdbcTemplate;
-    }
-
-    private final String INSERT_QUERY = "insert into authors (author_name)" +
-            " values ( :author_name)";
-
-    private final String FIND_BY_NAME_QUERY = "select id, author_name from authors " +
-            " where author_name = :author_name";
-
-    private final String FIND_BY_ID_QUERY = "select id, author_name from authors " +
-            " where id = :id";
-
-    private final String DELETE_BY_NAME_QUERY = "delete from authors" +
-            " where author_name = :author_name";
-
-    private final String LIST_ALL_QUERY = "select * from authors";
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Author creteAuthor(Author author) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbc.update(INSERT_QUERY,
-                new MapSqlParameterSource("author_name", author.getAuthorName()),
-                keyHolder
-        );
-
-        return new Author((Integer) keyHolder.getKey(), author);
+        entityManager.persist(author);
+        return new Author(author.getId(), author.getAuthorName());
     }
 
     @Override
-    public Author findByName(String authorName) {
-        try {
-            return jdbc.queryForObject(FIND_BY_NAME_QUERY,
-                    new MapSqlParameterSource("author_name", authorName),
-                    new AuthorMapper()
-            );
-        } catch (EmptyResultDataAccessException e){
-            return null;
+    public Author loadByName(String authorName) {
+        TypedQuery<Author> query = entityManager.createQuery("select a from Author a where a.authorName = :author_name"
+                , Author.class);
+        query.setParameter("author_name", authorName);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public Optional<Author> findByName(String authorName){
+        Query query = entityManager.createQuery("select a from Author a where a.authorName = :author_name"
+                , Author.class);
+        query.setParameter("author_name", authorName);
+        List<Author> resultList = query.getResultList();
+        if (resultList.size() == 0) {
+            return Optional.empty();
+        } else if (resultList.size() > 1) {
+            throw new BookStoreException("Result set is more than 1.");
+        } else {
+            Author author = resultList.get(0);
+            return Optional.of(author);
         }
     }
 
     @Override
     public Author findById(Integer id) {
-        try {
-            return jdbc.queryForObject(FIND_BY_ID_QUERY,
-                    new MapSqlParameterSource("id", id),
-                    new AuthorMapper()
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+        return entityManager.find(Author.class, id);
     }
 
     @Override
     public void deleteByName(String authorName) {
-        jdbc.update(DELETE_BY_NAME_QUERY,
-                new MapSqlParameterSource("author_name", authorName)
-        );
+        Query query = entityManager.createQuery("delete from Author a where a.authorName = :author_name");
+        query.setParameter("author_name", authorName);
+        query.executeUpdate();
     }
 
     @Override
     public List<Author> listAll() {
-        return jdbc.query(LIST_ALL_QUERY,
-                new AuthorMapper()
-        );
-    }
-
-    private static class AuthorMapper implements RowMapper<Author> {
-
-        @Override
-        public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("author_name");
-            return new Author(id, name);
-        }
+        TypedQuery<Author> query = entityManager.createQuery("select a from Author a"
+                , Author.class);
+        return query.getResultList();
     }
 }

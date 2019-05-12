@@ -1,6 +1,8 @@
 package bookstore.services;
 
+import bookstore.entity.Author;
 import bookstore.entity.Book;
+import bookstore.entity.Genre;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +13,7 @@ import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest(properties = {
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
@@ -19,24 +22,30 @@ import java.util.List;
 public class BookServiceTest {
     @Autowired
     private BookService bookService;
+    @Autowired
+    private GenreService genreService;
+    @Autowired
+    private AuthorService authorService;
+
 
     @Test
     public void BookCreationIdTest() {
-        bookService.createBook(new Book(1,1,"Some book"));
-        Assert.assertEquals("Some book", bookService.findByName("Some book").getBookName());
+        Author author = authorService.loadByName("Mark Twain1");
+        Genre genre  = genreService.loadByName("романтическая комедия");
+        bookService.createBook(new Book(author,genre,"Some book"));
+        Assert.assertEquals("Some book", bookService.loadByName("Some book").getBookName());
     }
 
     @Test
     public void bookFindByNameTest() {
-        bookService.createBook(new Book(2,2, "Some book 2"));
-        Assert.assertEquals("Some book 2", bookService.findByName("Some book 2").getBookName());
+        Assert.assertEquals("Some book 2", bookService.loadByName("Some book 2").getBookName());
     }
 
     @Test
     public void bookDeleteByNameTest() {
-        bookService.createBook(new Book(3,3,"Some book 3"));
         bookService.deleteByName("Some book 3");
-        Assert.assertNull(bookService.findByName("Some book 3"));
+        Optional<Book> book = bookService.findByName("Some book 3");
+        Assert.assertFalse(book.isPresent());
     }
 
     @Test

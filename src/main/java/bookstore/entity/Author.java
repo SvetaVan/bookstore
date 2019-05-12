@@ -1,14 +1,32 @@
 package bookstore.entity;
 
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.Collection;
+
+@Entity
+@Table(name = "authors",
+        uniqueConstraints = {@UniqueConstraint(
+                columnNames = {"author_id", "author_name"})}
+)
+@Setter
+@Getter
 public class Author {
 
-    final private Integer id;
-    final private String authorName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "author_id", nullable = false, updatable = false)
+    private Integer id;
+
+    @Column(name = "author_name", nullable = false, updatable = false)
+    private String authorName;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    private Collection<Book> books;
 
     public Author(String author) {
-        this.id = null;
         this.authorName = author;
     }
 
@@ -22,27 +40,7 @@ public class Author {
         this.authorName = authorName;
     }
 
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Author author1 = (Author) o;
-        return id.equals(author1.id) &&
-                Objects.equals(authorName, author1.authorName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, authorName);
-    }
+    public Author(){}
 
     @Override
     public String toString() {

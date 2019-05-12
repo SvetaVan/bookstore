@@ -11,12 +11,14 @@ import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest(properties = {
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"})
 @RunWith(SpringRunner.class)
 public class GenreServiceTest {
+
     @Autowired
     private GenreService genreService;
 
@@ -28,22 +30,21 @@ public class GenreServiceTest {
 
     @Test
     public void genreFindByNameTest() {
-        genreService.createGenre(new Genre("боевик"));
-        Genre foundGenre = genreService.findByName("боевик");
+        Genre foundGenre = genreService.loadByName("боевик");
         Assert.assertEquals("боевик", foundGenre.getGenreName());
     }
 
     @Test
     public void genreDeleteByNameTest() {
-        genreService.createGenre(new Genre("романтическая комедия"));
         genreService.deleteByName("романтическая комедия");
-        Assert.assertNull(genreService.findByName("романтическая комедия"));
+        Optional<Genre> genre = genreService.findByName("романтическая комедия");
+        Assert.assertFalse(genre.isPresent());
     }
 
     @Test
     public void genreListAllTest() {
         List<Genre> genres = genreService.listAll();
-        Assert.assertEquals(9, genres.size());
+        Assert.assertEquals(11, genres.size());
     }
 
 }

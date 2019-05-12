@@ -5,10 +5,13 @@ import bookstore.entity.Author;
 import bookstore.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class AuthorServiceImpl implements AuthorService {
 
     final private AuthorDao authorDao;
@@ -24,7 +27,12 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author findByName(String authorName) {
+    public Author loadByName(String authorName) {
+        return authorDao.loadByName(authorName);
+    }
+
+    @Override
+    public Optional<Author> findByName(String authorName) {
         return authorDao.findByName(authorName);
     }
 

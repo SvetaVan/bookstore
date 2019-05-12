@@ -5,10 +5,13 @@ import bookstore.entity.Genre;
 import bookstore.services.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class GenreServiceImpl implements GenreService {
 
     final private GenreDao genreDao;
@@ -24,7 +27,12 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Genre findByName(String genreName) {
+    public Genre loadByName(String genreName) {
+        return genreDao.loadByName(genreName);
+    }
+
+    @Override
+    public Optional<Genre> findByName(String genreName) {
         return genreDao.findByName(genreName);
     }
 

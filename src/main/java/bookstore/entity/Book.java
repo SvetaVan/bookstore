@@ -1,73 +1,73 @@
 package bookstore.entity;
 
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "books",
+        uniqueConstraints = {@UniqueConstraint(
+                columnNames = {"book_id", "author_id", "genre_id"})}
+)
+@Getter
+@Setter
 public class Book {
 
-    final private Integer id;
-    final private int authorId;
-    final private int genreId;
-    final private String bookName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "book_id", nullable = false, updatable = false)
+    private Integer id;
 
-    public Book(int authorId, int genreId, String bookName) {
-        this.id = null;
-        this.authorId = authorId;
-        this.genreId = genreId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "author_id")
+    private Author author;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
+
+
+    @Column(name = "book_name", nullable = false, updatable = false)
+    private String bookName;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "comment",
+            joinColumns = @JoinColumn(name = "book_id")
+    )
+   // @Column(name = "comments")
+    private List<String> comments;
+
+    public Book(Author author, Genre genre, String bookName) {
+        this.author = author;
+        this.genre = genre;
         this.bookName = bookName;
     }
 
     public Book(Integer id, Book book) {
         this.id = id;
-        this.authorId = book.getAuthorId();
-        this.genreId = book.getGenreId();
+        this.author = book.getAuthor();
+        this.genre = book.getGenre();
         this.bookName = book.getBookName();
     }
 
-    public Book(Integer id, int authorId, int genreId, String bookName) {
+    public Book(Integer id, Author author, Genre genre, String bookName) {
         this.id = id;
-        this.authorId = authorId;
-        this.genreId = genreId;
+        this.author = author;
+        this.genre = genre;
         this.bookName = bookName;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public int getGenreId() {
-        return genreId;
-    }
-
-    public String getBookName() {
-        return bookName;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return authorId == book.authorId &&
-                genreId == book.genreId &&
-                Objects.equals(id, book.id) &&
-                Objects.equals(bookName, book.bookName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, authorId, genreId, bookName);
-    }
+    public Book(){}
 
     @Override
     public String toString() {
         return "Book{" +
                 "id=" + id +
-                ", authorId=" + authorId +
-                ", genreId=" + genreId +
+                ", author=" + author +
+                ", genre=" + genre +
                 ", bookName='" + bookName + '\'' +
                 '}';
     }
