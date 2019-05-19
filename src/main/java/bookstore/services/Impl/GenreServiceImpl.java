@@ -3,6 +3,7 @@ package bookstore.services.Impl;
 import bookstore.dao.GenreDao;
 import bookstore.entity.Genre;
 import bookstore.services.GenreService;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,21 +24,16 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre createGenre(Genre genre) {
-        return genreDao.createGenre(genre);
+        return genreDao.save(genre);
     }
 
     @Override
-    public Genre loadByName(String genreName) {
-        return genreDao.loadByName(genreName);
+    public Genre findByName(String genreName) {
+        return genreDao.findByGenreName(genreName);
     }
 
     @Override
-    public Optional<Genre> findByName(String genreName) {
-        return genreDao.findByName(genreName);
-    }
-
-    @Override
-    public Genre findById(Integer id) {
+    public Optional<Genre> findById(Integer id) {
         return genreDao.findById(id);
     }
 
@@ -48,6 +44,6 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public List<Genre> listAll() {
-        return genreDao.listAll();
+        return Lists.newArrayList(genreDao.findAll());
     }
 }

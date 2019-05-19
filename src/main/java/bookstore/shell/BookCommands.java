@@ -14,6 +14,7 @@ import org.springframework.shell.standard.ShellOption;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @ShellComponent
 @Transactional
@@ -36,9 +37,9 @@ public class BookCommands {
     public String createBook(@ShellOption int authorId,
                              @ShellOption int genderId,
                              @ShellOption String bookName) {
-        Author author = authorService.findById(authorId);
-        Genre genre = genreService.findById(genderId);
-        Book book = new Book(author, genre, bookName);
+        Optional<Author> author = authorService.findById(authorId);
+        Optional<Genre> genre = genreService.findById(genderId);
+        Book book = new Book(author.get(), genre.get(), bookName);
         return bookService.createBook(book).toString();
     }
 
@@ -72,6 +73,6 @@ public class BookCommands {
     @ShellMethod("List book's comment")
     public void listCommentsByBook(@ShellOption int bookId) {
         List<String> list = bookService.listCommentByBook(bookId);
-        list.forEach(e-> System.out.println(e));
+        list.forEach(System.out::println);
     }
 }

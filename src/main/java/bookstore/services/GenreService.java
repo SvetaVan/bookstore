@@ -10,11 +10,9 @@ public interface GenreService {
 
     Genre createGenre(Genre genre);
 
-    Genre loadByName(String genreName);
+    Genre findByName(String genreName);
 
-    Optional<Genre> findByName(String genreName);
-
-    Genre findById(Integer id);
+    Optional<Genre> findById(Integer id);
 
     void deleteByName(String genreName);
 

@@ -3,6 +3,7 @@ package bookstore.services.Impl;
 import bookstore.dao.AuthorDao;
 import bookstore.entity.Author;
 import bookstore.services.AuthorService;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,21 +24,16 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author createAuthor(Author author) {
-        return authorDao.creteAuthor(author);
+        return authorDao.save(author);
     }
 
     @Override
-    public Author loadByName(String authorName) {
-        return authorDao.loadByName(authorName);
+    public Author findByName(String authorName) {
+        return authorDao.findByAuthorName(authorName);
     }
 
     @Override
-    public Optional<Author> findByName(String authorName) {
-        return authorDao.findByName(authorName);
-    }
-
-    @Override
-    public Author findById(Integer id) {
+    public Optional<Author> findById(Integer id) {
         return authorDao.findById(id);
     }
 
@@ -48,6 +44,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<Author> listAll() {
-        return authorDao.listAll();
+        return Lists.newArrayList(authorDao.findAll());
     }
 }

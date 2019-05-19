@@ -9,11 +9,9 @@ public interface AuthorService {
 
     Author createAuthor(Author author);
 
-    Author loadByName(String authorName);
+    Author findByName(String authorName);
 
-    Optional<Author> findByName(String authorName);
-
-    Author findById(Integer id);
+    Optional<Author> findById(Integer id);
 
     void deleteByName(String authorName);
 
