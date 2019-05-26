@@ -2,41 +2,34 @@ package bookstore.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
-@Table(name = "books",
-        uniqueConstraints = {@UniqueConstraint(
-                columnNames = {"book_id", "author_id", "genre_id"})}
-)
+@Document(collection = "Book")
 @Getter
 @Setter
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_id", nullable = false, updatable = false)
     private Integer id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "author_id")
+    @Field(value = "author")
+    @DBRef
     private Author author;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "genre_id")
+    @Field(value = "genre")
+    @DBRef
     private Genre genre;
 
-
-    @Column(name = "book_name", nullable = false, updatable = false)
+    @Indexed(unique = true)
+    @Field(value = "book_name")
     private String bookName;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "comment",
-            joinColumns = @JoinColumn(name = "book_id")
-    )
     private List<String> comments;
 
     public Book(Author author, Genre genre, String bookName) {

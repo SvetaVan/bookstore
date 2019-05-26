@@ -39,7 +39,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteByName(String authorName) {
-        authorDao.deleteByName(authorName);
+        authorDao.deleteByAuthorName(authorName);
     }
 
     @Override

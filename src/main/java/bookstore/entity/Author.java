@@ -2,40 +2,36 @@ package bookstore.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 
-@Entity
-@Table(name = "authors",
-        uniqueConstraints = {@UniqueConstraint(
-                columnNames = {"author_id", "author_name"})}
-)
+@Document
 @Setter
 @Getter
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "author_id", nullable = false, updatable = false)
-    private Integer id;
+    private BigInteger id;
 
-    @Column(name = "author_name", nullable = false, updatable = false)
     private String authorName;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private Collection<Book> books;
 
-    public Author(String author) {
-        this.authorName = author;
+    public Author(String authorName) {
+        this.authorName = authorName;
+        books = new ArrayList<>();
     }
 
-    public Author(Integer id, Author author) {
+    public Author(BigInteger id, Author author) {
         this.id = id;
         this.authorName = author.getAuthorName();
     }
 
-    public Author(Integer id, String authorName) {
+    public Author(BigInteger id, String authorName) {
         this.id = id;
         this.authorName = authorName;
     }
