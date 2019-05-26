@@ -9,11 +9,9 @@ public interface BookService {
 
     Book createBook(Book book);
 
-    Book loadByName(String bookName);
+    Book findByName(String bookName);
 
-    Optional<Book> findByName(String bookName);
-
-    Book findById(int id);
+    Optional<Book> findById(int id);
 
     void deleteByName(String bookName);
 

@@ -2,21 +2,15 @@ package bookstore.dao;
 
 
 import bookstore.entity.Author;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Optional;
+public interface AuthorDao extends CrudRepository<Author, Integer> {
 
-public interface AuthorDao {
+    Author findByAuthorName(String authorName);
 
-    Author creteAuthor(Author author);
+    @Query("delete from Author a where a.authorName = :author_name")
+    void deleteByName(@Param("author_name") String authorName);
 
-    Author loadByName(String authorName);
-
-    Optional<Author> findByName(String authorName);
-
-    Author findById(Integer id);
-
-    void deleteByName(String authorName);
-
-    List<Author> listAll();
 }

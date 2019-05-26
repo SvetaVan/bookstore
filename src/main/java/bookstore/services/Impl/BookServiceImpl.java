@@ -1,9 +1,9 @@
 package bookstore.services.Impl;
 
 import bookstore.dao.BookDao;
-import bookstore.dao.Impl.BookDaoImpl;
 import bookstore.entity.Book;
 import bookstore.services.BookService;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,27 +18,22 @@ public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
 
     @Autowired
-    public BookServiceImpl(BookDaoImpl bookDao) {
+    public BookServiceImpl(BookDao bookDao) {
         this.bookDao = bookDao;
     }
 
     @Override
     public Book createBook(Book book) {
-        return bookDao.createBook(book);
+        return bookDao.save(book);
     }
 
     @Override
-    public Book loadByName(String bookName) {
-        return bookDao.loadByName(bookName);
+    public Book findByName(String bookName) {
+        return bookDao.findByBookName(bookName);
     }
 
     @Override
-    public Optional<Book> findByName(String bookName) {
-        return bookDao.findByName(bookName);
-    }
-
-    @Override
-    public Book findById(int id) {
+    public Optional<Book> findById(int id) {
         return bookDao.findById(id);
     }
 
@@ -49,20 +44,22 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> listBooks() {
-        return bookDao.listBooks();
+        return Lists.newArrayList(bookDao.findAll());
     }
 
     @Override
     //должен сохранить коммент при закрытии транзакции, так как сущность менеджерится при ее извлечении из бд
     public void addComment(int bookId, String comment) {
-        Book book = bookDao.findById(bookId);
-        List<String> comments = book.getComments();
-        comments.add(comment);
+        Optional<Book> book = bookDao.findById(bookId);
+        if(book.isPresent()){
+            List<String> comments = book.get().getComments();
+            comments.add(comment);
+        }
     }
 
     @Override
     public List<String> listCommentByBook(int bookId) {
-        Book book = bookDao.findById(bookId);
-        return book.getComments();
+        Optional<Book> book = bookDao.findById(bookId);
+        return book.get().getComments();
     }
 }

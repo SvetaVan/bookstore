@@ -37,7 +37,6 @@ public class Book {
             name = "comment",
             joinColumns = @JoinColumn(name = "book_id")
     )
-   // @Column(name = "comments")
     private List<String> comments;
 
     public Book(Author author, Genre genre, String bookName) {
@@ -61,6 +60,9 @@ public class Book {
     }
 
     public Book(){}
+
+
+
 
     @Override
     public String toString() {
