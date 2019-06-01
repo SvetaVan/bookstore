@@ -3,11 +3,10 @@ package bookstore.entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 import java.util.List;
 
 @Document(collection = "Book")
@@ -16,17 +15,17 @@ import java.util.List;
 public class Book {
 
     @Id
-    private Integer id;
+    private String id;
 
     @Field(value = "author")
-    @DBRef
     private Author author;
 
     @Field(value = "genre")
-    @DBRef
     private Genre genre;
 
-    @Indexed(unique = true)
+   // @Indexed(unique = true) - пока я  не закомментировала, падала с ошибкой
+   // E11000 duplicate key error collection: app_db.Book index: genre.books.book_name dup key: { : null }
+   //Как так то?
     @Field(value = "book_name")
     private String bookName;
 
@@ -38,14 +37,14 @@ public class Book {
         this.bookName = bookName;
     }
 
-    public Book(Integer id, Book book) {
+    public Book(String id, Book book) {
         this.id = id;
         this.author = book.getAuthor();
         this.genre = book.getGenre();
         this.bookName = book.getBookName();
     }
 
-    public Book(Integer id, Author author, Genre genre, String bookName) {
+    public Book(String id, Author author, Genre genre, String bookName) {
         this.id = id;
         this.author = author;
         this.genre = genre;
@@ -53,9 +52,6 @@ public class Book {
     }
 
     public Book(){}
-
-
-
 
     @Override
     public String toString() {

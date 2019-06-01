@@ -4,34 +4,27 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.persistence.Id;
 
-@Document
 @Setter
 @Getter
 public class Author {
 
     @Id
-    private BigInteger id;
+    private String id;
 
     private String authorName;
 
-    private Collection<Book> books;
-
     public Author(String authorName) {
         this.authorName = authorName;
-        books = new ArrayList<>();
     }
 
-    public Author(BigInteger id, Author author) {
+    public Author(String id, Author author) {
         this.id = id;
         this.authorName = author.getAuthorName();
     }
 
-    public Author(BigInteger id, String authorName) {
+    public Author(String id, String authorName) {
         this.id = id;
         this.authorName = authorName;
     }

@@ -29,10 +29,10 @@ public class InitMongoDBchangeLog {
         author1 = new Author("Bram Stoker");
         author2 = new Author("Mark Twain");
         template.insert(author1);
-       // template.insert(author2);
+        template.insert(author2);
     }
 
-   /* @ChangeSet(order = "002", id = "initGenres", author = "svetlanavanyushina", runAlways = true)
+    @ChangeSet(order = "002", id = "initGenres", author = "svetlanavanyushina", runAlways = true)
     public void initGeners(MongoTemplate template){
         genre1 = new Genre("adventure");
         genre2 = new Genre("comedy");
@@ -49,7 +49,5 @@ public class InitMongoDBchangeLog {
         template.save(book1);
         template.save(book2);
     }
-*/
-
 
 }

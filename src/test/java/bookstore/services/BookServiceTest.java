@@ -5,26 +5,16 @@ import bookstore.entity.Book;
 import bookstore.entity.Genre;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.shell.jline.InteractiveShellApplicationRunner;
-import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
-@SpringBootTest(properties = {
-        InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
-        ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"})
-@DataJpaTest
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 @RunWith(SpringRunner.class)
-public class BookServiceTest {
+@DisplayName("BookServiceTest")
+public class BookServiceTest extends AbstractRepositoryTest{
     @Autowired
     private BookService bookService;
     @Autowired
@@ -43,7 +33,7 @@ public class BookServiceTest {
 
     @Test
     public void bookFindByNameTest() {
-        Assert.assertEquals("Some book 2", bookService.findByName("Some book 2").getBookName());
+        Assert.assertEquals("Dracula", bookService.findByName("Dracula").getBookName());
     }
 
     @Test
@@ -56,6 +46,6 @@ public class BookServiceTest {
     @Test
     public void bookListAllTest() {
         List<Book> books = bookService.listBooks();
-        Assert.assertEquals(7, books.size());
+        Assert.assertEquals(2, books.size());
     }
 }

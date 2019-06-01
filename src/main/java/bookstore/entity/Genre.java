@@ -2,18 +2,16 @@ package bookstore.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 import java.util.Collection;
 
-@Document
 @Getter
 @Setter
 public class Genre {
 
     @Id
-    private Integer id;
+    private String id;
 
     private String genreName;
 
@@ -23,12 +21,12 @@ public class Genre {
         this.genreName = genre;
     }
 
-    public Genre(Integer id, String genre) {
+    public Genre(String id, String genre) {
         this.id = id;
         this.genreName = genre;
     }
 
-    public Genre(Integer id, Genre genre) {
+    public Genre(String id, Genre genre) {
         this.id = id;
         this.genreName = genre.getGenreName();
     }
