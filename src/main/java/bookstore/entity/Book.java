@@ -23,9 +23,7 @@ public class Book {
     @Field(value = "genre")
     private Genre genre;
 
-   // @Indexed(unique = true) - пока я  не закомментировала, падала с ошибкой
-   // E11000 duplicate key error collection: app_db.Book index: genre.books.book_name dup key: { : null }
-   //Как так то?
+    @Indexed(unique = true)
     @Field(value = "book_name")
     private String bookName;
 
