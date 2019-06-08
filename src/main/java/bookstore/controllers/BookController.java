@@ -80,11 +80,4 @@ public class BookController {
         return "redirect:" + redirectUrl;
     }
 
-    /*Whitelabel Error Page
-This application has no explicit mapping for /error, so you are seeing this as a fallback.
-
-Sun Jun 02 23:30:29 MSK 2019
-There was an unexpected error (type=Method Not Allowed, status=405).
-Request method 'GET' not supported*/
-
 }

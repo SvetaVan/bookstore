@@ -2,17 +2,20 @@ package bookstore.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.Id;
-
+@Document(collection = "Author")
 @Setter
 @Getter
 public class Author {
 
     @Id
-    private String id;
+    @Field
+    private String authorId;
 
+    @Field
     private String authorName;
 
     public Author(String authorName) {
@@ -20,12 +23,12 @@ public class Author {
     }
 
     public Author(String id, Author author) {
-        this.id = id;
+        this.authorId = id;
         this.authorName = author.getAuthorName();
     }
 
     public Author(String id, String authorName) {
-        this.id = id;
+        this.authorId = id;
         this.authorName = authorName;
     }
 
@@ -34,7 +37,7 @@ public class Author {
     @Override
     public String toString() {
         return "Author{" +
-                "id=" + id +
+                "authorId=" + authorId +
                 ", authorName='" + authorName + '\'' +
                 '}';
     }

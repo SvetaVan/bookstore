@@ -2,12 +2,14 @@ package bookstore.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.Id;
 import java.util.List;
+
 
 @Document(collection = "Book")
 @Getter
@@ -15,37 +17,40 @@ import java.util.List;
 public class Book {
 
     @Id
+    @Field
     private String id;
 
-    @Field(value = "author")
-    private Author author;
+    @Field
+    @DBRef(lazy = true)
+    private Author authorId;
 
-    @Field(value = "genre")
-    private Genre genre;
+    @Field
+    @DBRef
+    private Genre genreId;
 
     @Indexed(unique = true)
-    @Field(value = "book_name")
+    @Field
     private String bookName;
 
     private List<String> comments;
 
-    public Book(Author author, Genre genre, String bookName) {
-        this.author = author;
-        this.genre = genre;
+    public Book(Author authorId, Genre genreId, String bookName) {
+        this.authorId = authorId;
+        this.genreId = genreId;
         this.bookName = bookName;
     }
 
     public Book(String id, Book book) {
         this.id = id;
-        this.author = book.getAuthor();
-        this.genre = book.getGenre();
+        this.authorId = book.getAuthorId();
+        this.genreId = book.getGenreId();
         this.bookName = book.getBookName();
     }
 
-    public Book(String id, Author author, Genre genre, String bookName) {
+    public Book(String id, Author authorId, Genre genreId, String bookName) {
         this.id = id;
-        this.author = author;
-        this.genre = genre;
+        this.authorId = authorId;
+        this.genreId = genreId;
         this.bookName = bookName;
     }
 
@@ -54,9 +59,9 @@ public class Book {
     @Override
     public String toString() {
         return "Book{" +
-                "id=" + id +
-                ", author=" + author +
-                ", genre=" + genre +
+                "authorId='" + id + '\'' +
+                ", authorId='" + authorId + '\'' +
+                ", genreId='" + genreId + '\'' +
                 ", bookName='" + bookName + '\'' +
                 '}';
     }

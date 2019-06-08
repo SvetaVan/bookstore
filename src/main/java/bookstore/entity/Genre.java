@@ -2,16 +2,20 @@ package bookstore.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.Id;
-
+@Document(collection = "Genre")
 @Getter
 @Setter
 public class Genre {
 
     @Id
-    private String id;
+    @Field
+    private String genreId;
 
+    @Field
     private String genreName;
 
     public Genre(String genre) {
@@ -19,12 +23,12 @@ public class Genre {
     }
 
     public Genre(String id, String genre) {
-        this.id = id;
+        this.genreId = id;
         this.genreName = genre;
     }
 
     public Genre(String id, Genre genre) {
-        this.id = id;
+        this.genreId = id;
         this.genreName = genre.getGenreName();
     }
 
@@ -33,7 +37,7 @@ public class Genre {
     @Override
     public String toString() {
         return "Genre{" +
-                "id=" + id +
+                "genreId=" + genreId +
                 ", genreName='" + genreName + '\'' +
                 '}';
     }
