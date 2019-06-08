@@ -62,8 +62,7 @@ public class BookController {
         }
         Book bookCreated = bookService.createBook(new Book(author, genre, bookName));
 
-        String redirectUrl = "http://localhost:8080/";
-        return "redirect:" + redirectUrl;
+        return "redirect:/";
     }
 
     @GetMapping("/")
@@ -76,8 +75,7 @@ public class BookController {
     @DeleteMapping("/delete/{name}")
     public String delete(@PathVariable("name") String name) {
         bookService.deleteByName(name);
-        String redirectUrl = "http://localhost:8080/";
-        return "redirect:" + redirectUrl;
+        return "redirect:/";
     }
 
 }
