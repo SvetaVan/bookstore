@@ -22,11 +22,11 @@ public class Book {
 
     @Field
     @DBRef(lazy = true)
-    private Author authorId;
+    private Author author;
 
     @Field
     @DBRef
-    private Genre genreId;
+    private Genre genre;
 
     @Indexed(unique = true)
     @Field
@@ -34,23 +34,23 @@ public class Book {
 
     private List<String> comments;
 
-    public Book(Author authorId, Genre genreId, String bookName) {
-        this.authorId = authorId;
-        this.genreId = genreId;
+    public Book(Author author, Genre genre, String bookName) {
+        this.author = author;
+        this.genre = genre;
         this.bookName = bookName;
     }
 
     public Book(String id, Book book) {
         this.id = id;
-        this.authorId = book.getAuthorId();
-        this.genreId = book.getGenreId();
+        this.author = book.getAuthor();
+        this.genre = book.getGenre();
         this.bookName = book.getBookName();
     }
 
-    public Book(String id, Author authorId, Genre genreId, String bookName) {
+    public Book(String id, Author author, Genre genre, String bookName) {
         this.id = id;
-        this.authorId = authorId;
-        this.genreId = genreId;
+        this.author = author;
+        this.genre = genre;
         this.bookName = bookName;
     }
 
@@ -59,9 +59,9 @@ public class Book {
     @Override
     public String toString() {
         return "Book{" +
-                "authorId='" + id + '\'' +
-                ", authorId='" + authorId + '\'' +
-                ", genreId='" + genreId + '\'' +
+                "author='" + id + '\'' +
+                ", author='" + author + '\'' +
+                ", genre='" + genre + '\'' +
                 ", bookName='" + bookName + '\'' +
                 '}';
     }
