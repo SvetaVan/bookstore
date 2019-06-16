@@ -39,7 +39,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public void deleteByName(String genreName) {
-        genreDao.deleteByName(genreName);
+        genreDao.deleteByGenreName(genreName);
     }
 
     @Override

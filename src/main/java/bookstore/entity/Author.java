@@ -2,41 +2,33 @@ package bookstore.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.*;
-import java.util.Collection;
-
-@Entity
-@Table(name = "authors",
-        uniqueConstraints = {@UniqueConstraint(
-                columnNames = {"author_id", "author_name"})}
-)
+@Document(collection = "Author")
 @Setter
 @Getter
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "author_id", nullable = false, updatable = false)
-    private Integer id;
+    @Field
+    private String authorId;
 
-    @Column(name = "author_name", nullable = false, updatable = false)
+    @Field
     private String authorName;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-    private Collection<Book> books;
-
-    public Author(String author) {
-        this.authorName = author;
+    public Author(String authorName) {
+        this.authorName = authorName;
     }
 
-    public Author(Integer id, Author author) {
-        this.id = id;
+    public Author(String id, Author author) {
+        this.authorId = id;
         this.authorName = author.getAuthorName();
     }
 
-    public Author(Integer id, String authorName) {
-        this.id = id;
+    public Author(String id, String authorName) {
+        this.authorId = id;
         this.authorName = authorName;
     }
 
@@ -45,7 +37,7 @@ public class Author {
     @Override
     public String toString() {
         return "Author{" +
-                "id=" + id +
+                "authorId=" + authorId +
                 ", authorName='" + authorName + '\'' +
                 '}';
     }

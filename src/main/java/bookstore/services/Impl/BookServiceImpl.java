@@ -39,7 +39,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteByName(String bookName) {
-        bookDao.deleteByName(bookName);
+        bookDao.deleteByBookName(bookName);
     }
 
     @Override

@@ -2,41 +2,33 @@ package bookstore.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.*;
-import java.util.Collection;
-
-@Entity
+@Document(collection = "Genre")
 @Getter
 @Setter
-@Table(name = "genres",
-        uniqueConstraints = {@UniqueConstraint(
-                columnNames = {"genre_id", "genre_name"})}
-)
 public class Genre {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "genre_id", nullable = false, updatable = false)
-    private Integer id;
+    @Field
+    private String genreId;
 
-    @Column(name = "genre_name", nullable = false, updatable = false)
+    @Field
     private String genreName;
-
-    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
-    private Collection<Book> books;
 
     public Genre(String genre) {
         this.genreName = genre;
     }
 
-    public Genre(Integer id, String genre) {
-        this.id = id;
+    public Genre(String id, String genre) {
+        this.genreId = id;
         this.genreName = genre;
     }
 
-    public Genre(Integer id, Genre genre) {
-        this.id = id;
+    public Genre(String id, Genre genre) {
+        this.genreId = id;
         this.genreName = genre.getGenreName();
     }
 
@@ -45,7 +37,7 @@ public class Genre {
     @Override
     public String toString() {
         return "Genre{" +
-                "id=" + id +
+                "genreId=" + genreId +
                 ", genreName='" + genreName + '\'' +
                 '}';
     }

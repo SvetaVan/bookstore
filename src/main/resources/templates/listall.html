@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all persons</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .persons, .persons td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>All books:</h1>
+
+<table class="book">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Genre</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.bookName}">Book</td>
+        <td th:text="${book.author.authorName}">Author</td>
+        <td th:text="${book.genre.genreName}">Genre</td>
+        <td>
+            <a th:href="@{/book(name=${book.bookName})}" href="book.html">View book information</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
