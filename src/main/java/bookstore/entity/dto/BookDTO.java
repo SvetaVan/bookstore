@@ -1,4 +1,4 @@
-package bookstore.controllers.dto;
+package bookstore.entity.dto;
 
 import bookstore.entity.Author;
 import bookstore.entity.Genre;
@@ -14,6 +14,8 @@ public class BookDTO {
         this.genre = new Genre(genreName);
         this.bookName = bookName;
     }
+
+    public BookDTO(){}
 
     public Author getAuthor() {
         return author;
