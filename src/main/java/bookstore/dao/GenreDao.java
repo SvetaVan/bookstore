@@ -1,11 +1,12 @@
 package bookstore.dao;
 
 import bookstore.entity.Genre;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Mono;
 
-public interface GenreDao extends MongoRepository<Genre, Integer> {
+public interface GenreDao extends ReactiveMongoRepository<Genre, String> {
 
-    Genre findByGenreName(String genreName);
+    Mono<Genre> findByGenreName(String genreName);
 
-    void deleteByGenreName(String genreName);
+    Mono<Void> deleteByGenreName(String genreName);
 }

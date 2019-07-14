@@ -6,36 +6,59 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
-import java.util.List;
-
+import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(SpringRunner.class)
 @DisplayName("AuthorServiceTest")
+@DataMongoTest
 public class AuthorServiceTest extends AbstractRepositoryTest{
 
     @Autowired
     private AuthorService authorService;
 
     @Test
-    public void authorCreationIdTest() {
-        Author authorCreated = authorService.createAuthor(new Author("ERNEST HEMINGWAY"));
-        Assert.assertEquals("ERNEST HEMINGWAY", authorCreated.getAuthorName());
+    public void setIdOnSave() {
+        Mono<Author> authorMono = authorService.createAuthor("Bill");
+
+        StepVerifier
+                .create(authorMono)
+                .assertNext(author -> assertNotNull(author.getAuthorId()))
+                .expectComplete()
+                .verify();
     }
 
+    //не проходит с ошибкой
+    //java.lang.AssertionError: expectation "assertNext" failed (expected: onNext(); actual: onComplete())
     @Test
     public void authorDeleteByNameTest() {
-        authorService.deleteByName("Bram Stoker1");
-        Author name = authorService.findByName("Bram Stoker1");
-        Assert.assertNull(name);
+        Mono<Author> authorMono = authorService.createAuthor("Bill");
+        authorService.deleteByName("Bill");
+        Mono<Author> notFoundMono = authorService.findByName("Bill");
+
+        StepVerifier
+                .create(notFoundMono)
+                .assertNext(author -> Assert.assertNull(author.getAuthorId()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     public void authorListAllTest() {
-        List<Author> authors = authorService.listAll();
-        Assert.assertEquals(2, authors.size());
+        Flux<Author> authorFlux = authorService.listAll();
+        Mono<Long> count = authorFlux.count();
+
+        StepVerifier
+                .create(count)
+                .assertNext(countAuthors -> Assert.assertEquals(Long.valueOf(2),countAuthors))
+                .expectComplete()
+                .verify();
     }
 
 }
