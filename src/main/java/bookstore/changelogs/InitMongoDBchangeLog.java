@@ -7,7 +7,6 @@ import bookstore.entity.Genre;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
-import lombok.val;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 @ChangeLog(order = "001")
@@ -44,8 +43,8 @@ public class InitMongoDBchangeLog {
     public void initBooks(MongoTemplate template){
 
 
-        val book1 = new Book(authorId1, genreId2, "Dracula");
-        val book2 = new Book(authorId2, genreId3, "The Million Pound Bank Note");
+        Book book1 = new Book(authorId1, genreId2, "Dracula");
+        Book book2 = new Book(authorId2, genreId3, "The Million Pound Bank Note");
         template.save(book1);
         template.save(book2);
     }

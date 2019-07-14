@@ -1,13 +1,11 @@
 package bookstore.entity;
 
-import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "Genre")
-@Getter
 @Setter
 public class Genre {
 
@@ -37,8 +35,16 @@ public class Genre {
     @Override
     public String toString() {
         return "Genre{" +
-                "genreId=" + genreId +
+                "genre=" + genreId +
                 ", genreName='" + genreName + '\'' +
                 '}';
+    }
+
+    public String getGenreId() {
+        return this.genreId;
+    }
+
+    public String getGenreName() {
+        return this.genreName;
     }
 }

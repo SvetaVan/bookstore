@@ -1,6 +1,5 @@
 package bookstore.entity;
 
-import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "Author")
 @Setter
-@Getter
 public class Author {
 
     @Id
@@ -37,8 +35,16 @@ public class Author {
     @Override
     public String toString() {
         return "Author{" +
-                "authorId=" + authorId +
+                "author=" + authorId +
                 ", authorName='" + authorName + '\'' +
                 '}';
+    }
+
+    public String getAuthorId() {
+        return this.authorId;
+    }
+
+    public String getAuthorName() {
+        return this.authorName;
     }
 }
