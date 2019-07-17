@@ -36,7 +36,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Mono<Void> deleteByName(String genreName) {
+    public Mono<Long> deleteByName(String genreName) {
         return genreDao.deleteByGenreName(genreName);
     }
 

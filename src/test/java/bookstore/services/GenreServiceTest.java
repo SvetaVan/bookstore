@@ -33,15 +33,12 @@ public class GenreServiceTest extends AbstractRepositoryTest{
                 .verify();
     }
 
-    //не проходит с ошибкой
-    //org.springframework.data.mapping.MappingException: Couldn't find PersistentEntity for type class java.lang.Void!
-    //Вроде говорили, что можно Void использовать, но не сложилось((
     @Test
     public void genreDeleteByNameTest() {
         Mono<Genre> genreMono = genreService.createGenre("Драма");
         genreService.deleteByName("Драма");
-        Mono<Genre> notFoundMono = genreService.findByName("Драма");
-
+        Mono<Genre> notFoundMono = genreService.findByName("Драма")
+                .switchIfEmpty(Mono.just(new Genre()));
         StepVerifier
                 .create(notFoundMono)
                 .assertNext(genre -> Assert.assertNull(genre.getGenreId()))

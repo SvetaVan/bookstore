@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple3;
 
 import java.time.Duration;
 
@@ -43,33 +44,26 @@ public class BookController {
     }
 
     @GetMapping("/{name}")
-    public Mono<BookDTO> viewBook(@PathVariable("name") String name ) throws NotFoundException {
-            return bookService.findByName(name)
-                    .map(book -> new BookDTO(book.getAuthor().getAuthorName(), book.getGenre().getGenreName(), book.getBookName()));
+    public Mono<BookDTO> viewBook(@PathVariable("name") String name) throws NotFoundException {
+        return bookService.findByName(name)
+                .map(book -> new BookDTO(book.getAuthor().getAuthorName(), book.getGenre().getGenreName(), book.getBookName()));
     }
 
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public Mono<Book> createBook(@RequestBody BookDTO bookDTO) {
-        return Mono.just(bookDTO)
-                .map(newBook -> {
-                            Book bookToSave = new Book();
+        Book bookToSave = new Book();
+        Mono<Tuple3<BookDTO, Author, Genre>> zip = Mono.zip(Mono.just(bookDTO)
+                , authorService.createAuthor(bookDTO.getAuthor().getAuthorName())
+                , genreService.createGenre(bookDTO.getGenre().getGenreName()));
 
-                           /* Mono<Author> monoAuthor = authorService.findByName(bookDTO.getAuthor().getAuthorName())
-                                    .switchIfEmpty(authorService.createAuthor(bookDTO.getAuthor().getAuthorName()));*/
-                            Mono<Author> monoAuthor = authorService.createAuthor(bookDTO.getAuthor().getAuthorName());
-
-                            Mono<Genre> monoGenre = genreService.findByName(bookDTO.getGenre().getGenreName())
-                                    .switchIfEmpty(genreService.createGenre(bookDTO.getGenre().getGenreName()));
-                            //так и не получилось сохранить автора и жанр в bookToSave, только название сохраняется
-                            //при этом в тесте создается, как так то
-                            monoAuthor.doOnNext(bookToSave::setAuthor);
-                            monoGenre.doOnNext(bookToSave::setGenre);
-                            bookToSave.setBookName(bookDTO.getBookName());
-                            return bookToSave;
-                        }
-                )
-                .flatMap(bookService::createBook);
+        zip.doOnNext(tuple -> {
+                    bookToSave.setBookName(tuple.getT1().getBookName());
+                    bookToSave.setAuthor(tuple.getT2());
+                    bookToSave.setGenre(tuple.getT3());
+                }
+        );
+        return bookService.createBook(bookToSave);
     }
 
     @DeleteMapping("/delete/{name}")

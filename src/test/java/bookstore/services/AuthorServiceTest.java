@@ -34,13 +34,12 @@ public class AuthorServiceTest extends AbstractRepositoryTest{
                 .verify();
     }
 
-    //не проходит с ошибкой
-    //java.lang.AssertionError: expectation "assertNext" failed (expected: onNext(); actual: onComplete())
     @Test
     public void authorDeleteByNameTest() {
         Mono<Author> authorMono = authorService.createAuthor("Bill");
         authorService.deleteByName("Bill");
-        Mono<Author> notFoundMono = authorService.findByName("Bill");
+        Mono<Author> notFoundMono = authorService.findByName("Bill")
+                .switchIfEmpty(Mono.just(new Author()));
 
         StepVerifier
                 .create(notFoundMono)

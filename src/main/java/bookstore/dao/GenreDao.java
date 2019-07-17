@@ -8,5 +8,5 @@ public interface GenreDao extends ReactiveMongoRepository<Genre, String> {
 
     Mono<Genre> findByGenreName(String genreName);
 
-    Mono<Void> deleteByGenreName(String genreName);
+    Mono<Long> deleteByGenreName(String genreName);
 }

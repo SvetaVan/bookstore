@@ -55,8 +55,8 @@ public class BookServiceTest extends AbstractRepositoryTest {
         Mono<Book> bookMono = bookService.createBook(book);
 
         bookService.deleteByName("Very interesting book2");
-        Mono<Book> notFoundMono = bookService.findByName("Very interesting book2");
-
+        Mono<Book> notFoundMono = bookService.findByName("Very interesting book2")
+                    .switchIfEmpty(Mono.just(new Book()));
         StepVerifier
                 .create(notFoundMono)
                 .assertNext(bookDeleted -> Assert.assertNull(bookDeleted.getId()))

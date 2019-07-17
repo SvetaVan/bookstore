@@ -13,7 +13,7 @@ public interface GenreService {
 
     Mono<Genre> findById(String id);
 
-    Mono<Void> deleteByName(String genreName);
+    Mono<Long> deleteByName(String genreName);
 
     Flux<Genre> listAll();
 }
