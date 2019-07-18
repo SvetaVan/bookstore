@@ -1,31 +1,40 @@
 package bookstore.entity.dto;
 
-import bookstore.entity.Author;
-import bookstore.entity.Genre;
-
 public class BookDTO {
 
-    private Author author;
-    private Genre genre;
+    private String authorName;
+    private String genreName;
     private String bookName;
 
     public BookDTO(String authorName, String genreName, String bookName) {
-        this.author = new Author(authorName);
-        this.genre = new Genre(genreName);
+        this.authorName = authorName;
+        this.genreName = genreName;
         this.bookName = bookName;
     }
 
     public BookDTO(){}
 
-    public Author getAuthor() {
-        return author;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public Genre getGenre() {
-        return genre;
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
+    public String getGenreName() {
+        return genreName;
+    }
+
+    public void setGenreName(String genreName) {
+        this.genreName = genreName;
     }
 
     public String getBookName() {
         return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 }
