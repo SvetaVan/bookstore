@@ -41,8 +41,6 @@ public class InitMongoDBchangeLog {
 
     @ChangeSet(order = "003", id = "initBooks", author = "svetlanavanyushina", runAlways = true)
     public void initBooks(MongoTemplate template){
-
-
         Book book1 = new Book(authorId1, genreId2, "Dracula");
         Book book2 = new Book(authorId2, genreId3, "The Million Pound Bank Note");
         template.save(book1);

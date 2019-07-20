@@ -1,20 +1,19 @@
 package bookstore.services;
 
 import bookstore.entity.Author;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface AuthorService {
 
-    Author createAuthor(Author author);
+    Mono<Author> createAuthor(String authorName);
 
-    Author findByName(String authorName);
+    Mono<Author> findByName(String authorName);
 
-    Optional<Author> findById(Integer id);
+    Mono<Author> findById(String id);
 
-    void deleteByName(String authorName);
+    Mono<Author> deleteByName(String authorName);
 
-    List<Author> listAll();
+    Flux<Author> listAll();
 
 }

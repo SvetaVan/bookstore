@@ -3,13 +3,11 @@ package bookstore.services.Impl;
 import bookstore.dao.GenreDao;
 import bookstore.entity.Genre;
 import bookstore.services.GenreService;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @Transactional
@@ -23,27 +21,27 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Genre createGenre(Genre genre) {
-        return genreDao.save(genre);
+    public Mono<Genre> createGenre(String genreName) {
+        return genreDao.save(new Genre(genreName));
     }
 
     @Override
-    public Genre findByName(String genreName) {
+    public Mono<Genre> findByName(String genreName) {
         return genreDao.findByGenreName(genreName);
     }
 
     @Override
-    public Optional<Genre> findById(Integer id) {
+    public Mono<Genre> findById(String id) {
         return genreDao.findById(id);
     }
 
     @Override
-    public void deleteByName(String genreName) {
-        genreDao.deleteByGenreName(genreName);
+    public Mono<Long> deleteByName(String genreName) {
+        return genreDao.deleteByGenreName(genreName);
     }
 
     @Override
-    public List<Genre> listAll() {
-        return Lists.newArrayList(genreDao.findAll());
+    public Flux<Genre> listAll() {
+        return genreDao.findAll();
     }
 }

@@ -1,24 +1,20 @@
 package bookstore.services;
 
 import bookstore.entity.Book;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface BookService {
 
-    Book createBook(Book book);
+    Mono<Book> createBook(Book book);
 
-    Book findByName(String bookName);
+    Mono<Book> findByName(String bookName);
 
-    Optional<Book> findById(int id);
+    Mono<Book> findById(String id);
 
-    void deleteByName(String bookName);
+    Mono<Book> deleteByName(String bookName);
 
-    List<Book> listBooks();
+    Flux<Book> listBooks();
 
-    void addComment(int bookId, String comment);
-
-    List<String> listCommentByBook (int bookId);
 
 }

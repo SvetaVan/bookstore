@@ -1,6 +1,5 @@
 package bookstore.entity;
 
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -11,7 +10,6 @@ import java.util.List;
 
 
 @Document(collection = "Book")
-@Setter
 public class Book {
 
     @Id
@@ -82,5 +80,25 @@ public class Book {
 
     public List<String> getComments() {
         return this.comments;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public void setComments(List<String> comments) {
+        this.comments = comments;
     }
 }

@@ -2,19 +2,18 @@ package bookstore.services;
 
 
 import bookstore.entity.Genre;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface GenreService {
 
-    Genre createGenre(Genre genre);
+    Mono<Genre> createGenre(String genreName);
 
-    Genre findByName(String genreName);
+    Mono<Genre> findByName(String genreName);
 
-    Optional<Genre> findById(Integer id);
+    Mono<Genre> findById(String id);
 
-    void deleteByName(String genreName);
+    Mono<Long> deleteByName(String genreName);
 
-    List<Genre> listAll();
+    Flux<Genre> listAll();
 }
