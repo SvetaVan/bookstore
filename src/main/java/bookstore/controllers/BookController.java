@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @RestController
-@RequestMapping("/flux/book")
+@RequestMapping("user/flux/book")
 public class BookController {
 
     private final BookService bookService;
