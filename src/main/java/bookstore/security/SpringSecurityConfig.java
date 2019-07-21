@@ -1,41 +1,35 @@
 package bookstore.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
 
-@EnableWebSecurity
-public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+public class SpringSecurityConfig {
 
-    @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
-
-    // roles admin allow to access /admin/**
-    // roles user allow to access /user/**
-    // custom 403 access denied handler
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-
-        http.csrf().disable()
-                .authorizeRequests()
-                    .antMatchers("/").permitAll()
-                    .antMatchers("/user/**").hasAnyRole("USER")
-                    .anyRequest().authenticated()
+    @Bean
+    public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
+        return http
+                .authorizeExchange()
+                .pathMatchers("/admin/**").hasRole("ADMIN")
+                .pathMatchers("/user/**").hasRole("USER")
+                .pathMatchers("/user/**").hasRole("ADMIN")
+                // anonymous
+                .anyExchange().permitAll()
                 .and()
                 .formLogin()
-                    .permitAll()
                 .and()
-                    .logout()
-                    .permitAll()
-                .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+                .build();
     }
 
 
@@ -45,15 +39,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         return NoOpPasswordEncoder.getInstance();
     }
 
+    @Bean
+    public ReactiveUserDetailsService userDetailsService() {
+        UserDetails user = User
+                .withUsername("user")
+                .password("password")
+                .roles("USER")
+                .build();
+        UserDetails admin = User
+                .withUsername("admin")
+                .password("password")
+                .roles("ADMIN")
+                .build();
 
-    // create two users, admin and user
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-        auth.inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER")
-                .and()
-                .withUser("admin").password("password").roles("ADMIN");
+        return new MapReactiveUserDetailsService(user, admin);
     }
 
 }
