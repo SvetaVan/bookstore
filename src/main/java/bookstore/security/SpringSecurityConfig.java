@@ -21,9 +21,8 @@ public class SpringSecurityConfig {
     public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
         return http
                 .authorizeExchange()
-                .pathMatchers("/admin/**").hasRole("ADMIN")
-                .pathMatchers("/user/**").hasRole("USER")
-                .pathMatchers("/user/**").hasRole("ADMIN")
+                //.pathMatchers("/flux/book/**").hasRole("ADMIN")
+                //.pathMatchers("/flux/book/**").hasRole("USER")
                 // anonymous
                 .anyExchange().permitAll()
                 .and()
@@ -52,13 +51,13 @@ public class SpringSecurityConfig {
     public ReactiveUserDetailsService userDetailsService() {
         UserDetails user = User
                 .withUsername("user")
-                .password(BCrypt.hashpw("user-password",BCrypt.gensalt(4)))
+                .password(BCrypt.hashpw("password",BCrypt.gensalt(4)))
                 .roles("USER")
                 .build();
         UserDetails admin = User
                 .withUsername("admin")
-                .password(BCrypt.hashpw("admin-password",BCrypt.gensalt(4)))
-                .roles("ADMIN")
+                .password(BCrypt.hashpw("password",BCrypt.gensalt(4)))
+                .roles("ADMIN", "USER")
                 .build();
 
         return new MapReactiveUserDetailsService(user, admin);

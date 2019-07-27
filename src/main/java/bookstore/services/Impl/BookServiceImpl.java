@@ -4,7 +4,6 @@ import bookstore.dao.BookDao;
 import bookstore.entity.Book;
 import bookstore.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -37,7 +36,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public Mono<Book> deleteByName(String bookName) {
         return bookDao.deleteByBookName(bookName);
     }
