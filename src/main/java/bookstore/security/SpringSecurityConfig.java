@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.MapReactiveUserDetailsServi
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
@@ -34,20 +34,30 @@ public class SpringSecurityConfig {
 
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    public PasswordEncoder customPasswordEncoder() {
+        return new PasswordEncoder() {
+            @Override
+            public String encode(CharSequence rawPassword) {
+                return BCrypt.hashpw(rawPassword.toString(), BCrypt.gensalt(4));
+            }
+
+            @Override
+            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                return BCrypt.checkpw(rawPassword.toString(), encodedPassword);
+            }
+        };
     }
 
     @Bean
     public ReactiveUserDetailsService userDetailsService() {
         UserDetails user = User
                 .withUsername("user")
-                .password("password")
+                .password(BCrypt.hashpw("user-password",BCrypt.gensalt(4)))
                 .roles("USER")
                 .build();
         UserDetails admin = User
                 .withUsername("admin")
-                .password("password")
+                .password(BCrypt.hashpw("admin-password",BCrypt.gensalt(4)))
                 .roles("ADMIN")
                 .build();
 
