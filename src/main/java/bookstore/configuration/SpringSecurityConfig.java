@@ -1,4 +1,4 @@
-package bookstore.security;
+package bookstore.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -21,10 +21,7 @@ public class SpringSecurityConfig {
     public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
         return http
                 .authorizeExchange()
-                //.pathMatchers("/flux/book/**").hasRole("ADMIN")
-                //.pathMatchers("/flux/book/**").hasRole("USER")
-                // anonymous
-                .anyExchange().permitAll()
+                .anyExchange().authenticated()
                 .and()
                 .formLogin()
                 .and()

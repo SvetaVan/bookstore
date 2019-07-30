@@ -35,17 +35,13 @@ public class SecurityTest {
     @Autowired
     private MockMvc mockMvc;
 
-/*
-    java.lang.AssertionError: Status
-    Expected :200
-    Actual   :404*/
     @Test
     @WithMockUser(roles = "USER")
     public void getAllBooks() throws Exception {
         Mockito
                 .when(bookService.listBooks())
                 .thenReturn(Flux.just(new Book(), new Book()));
-        mockMvc.perform(get("/user/flux/book/all"))
+        mockMvc.perform(get("/flux/book/all"))
                 .andExpect(status().isOk());
     }
 }
