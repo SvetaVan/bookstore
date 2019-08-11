@@ -81,7 +81,7 @@ public class Main {
         BookService bookService = ctx.getBean(BookService.class);
 
         while (true) {
-            Thread.sleep(10000);
+            Thread.sleep(1000);
             final List<Book> books = generateNewBooks();
             Collection<String> bookAdvertisement = bookStore.process(books);
             System.out.println("Advertised books: " + String.join(";", bookAdvertisement));
